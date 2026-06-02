@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BizTab Payment Gateway</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+<div class="logo">
+BizTab Gateway
+</div>
+
+<div class="secure">
+🔒 Secure Environment
+</div>
+
+</nav>
+
+<section class="hero">
+
+<h1>
+Enterprise Payment Gateway Simulator
+</h1>
+
+<p>
+Demonstrating payment authorization,
+OTP verification,
+transaction processing,
+and settlement workflows.
+</p>
+
+</section>
+
+<section class="security">
+
+<div class="badge">SSL Secured</div>
+<div class="badge">PCI DSS</div>
+<div class="badge">Bank Grade Security</div>
+<div class="badge">24/7 Monitoring</div>
+
+</section>
+
+<div class="dashboard">
+
+<div class="order-card">
+
+<h2>Order Summary</h2>
+
+<div class="row">
+<span>Product</span>
+<span>Premium Plan</span>
+</div>
+
+<div class="row">
+<span>Duration</span>
+<span>Annual</span>
+</div>
+
+<div class="row">
+<span>Tax</span>
+<span>₹180</span>
+</div>
+
+<div class="row total">
+<span>Total</span>
+<span>₹1,999</span>
+</div>
+
+</div>
+
+<div class="payment-card">
+
+<h2>Choose Payment Method</h2>
+
+<div class="method-grid">
+
+<div class="method-box active"
+onclick="showMethod('card',this)">
+
+💳
+
+<span>Card</span>
+
+</div>
+
+<div class="method-box"
+onclick="showMethod('upi',this)">
+
+📱
+
+<span>UPI</span>
+
+</div>
+
+<div class="method-box"
+onclick="showMethod('bank',this)">
+
+🏦
+
+<span>Net Banking</span>
+
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div id="cardSection">
+
+<input
+type="text"
+id="cardName"
+placeholder="Cardholder Name">
+
+<input
+type="text"
+id="cardNumber"
+placeholder="1234 5678 9012 3456"
+maxlength="19"
+oninput="formatCard(this)">
+
+<div class="two-col">
+
+<input
+type="text"
+id="expiry"
+placeholder="MM/YY"
+maxlength="5"
+oninput="formatExpiry(this)">
+
+<input
+type="password"
+id="cvv"
+placeholder="CVV"
+maxlength="3"
+oninput="formatCVV(this)">
+
+</div>
+
+</div>
+
+<!-- UPI -->
+
+<div id="upiSection" style="display:none;">
+
+<input
+type="text"
+id="upiId"
+placeholder="example@upi">
+
+<div class="upi-box">
+
+🟢 Google Pay
+
+</div>
+
+<div class="upi-box">
+
+🟣 PhonePe
+
+</div>
+
+<div class="upi-box">
+
+🔵 Paytm
+
+</div>
+
+</div>
+
+<!-- BANK -->
+
+<div id="bankSection" style="display:none;">
+
+<select id="bankName">
+
+<option value="">
+Select Bank
+</option>
+
+<option>
+State Bank of India
+</option>
+
+<option>
+HDFC Bank
+</option>
+
+<option>
+ICICI Bank
+</option>
+
+<option>
+Axis Bank
+</option>
+
+</select>
+
+<input
+type="text"
+id="accountNumber"
+placeholder="Account Number">
+
+</div>
+
+<button onclick="startPayment()">
+
+Pay ₹1,999
+
+</button>
+
+<div id="paymentMessage"></div>
+
+</div>
+
+</div>
+
+<!-- OTP MODAL -->
+
+<div id="otpModal" class="modal">
+
+  <div class="otp-modal-box">
+
+    <div class="otp-icon">
+      🔐
+    </div>
+
+    <h2>OTP Verification</h2>
+
+    <p class="otp-subtitle">
+
+      We've sent a secure verification code
+      to your registered mobile number
+
+      <br><br>
+
+      <strong>+91 •••• ••9876</strong>
+
+    </p>
+
+    <div class="otp-grid">
+
+      <input maxlength="1" id="o1"
+      oninput="nextOTP(this,'o2')">
+
+      <input maxlength="1" id="o2"
+      oninput="nextOTP(this,'o3')">
+
+      <input maxlength="1" id="o3"
+      oninput="nextOTP(this,'o4')">
+
+      <input maxlength="1" id="o4">
+
+    </div>
+
+    <div class="otp-info">
+
+      Demo OTP :
+      <strong>1234</strong>
+
+    </div>
+
+    <button
+    class="verify-btn"
+    onclick="verifyOTP()">
+
+      Verify Payment
+
+    </button>
+
+    <p class="resend">
+
+      Didn't receive OTP?
+
+      <span>Resend</span>
+
+    </p>
+
+  </div>
+
+</div>
+
+<div id="successModal" class="success-modal">
+
+  <div class="success-box">
+
+    <div class="success-icon">
+      ✓
+    </div>
+
+    <h2>Payment Successful</h2>
+
+    <p>
+      Your transaction has been completed successfully.
+    </p>
+
+    <div class="receipt">
+
+      <div class="receipt-row">
+        <span>Transaction ID</span>
+        <span id="txnId"></span>
+      </div>
+
+      <div class="receipt-row">
+        <span>Amount</span>
+        <span>₹1,999</span>
+      </div>
+
+      <div class="receipt-row">
+        <span>Status</span>
+        <span class="success-status">
+          Successful
+        </span>
+      </div>
+
+    </div>
+
+    <button onclick="closeSuccess()">
+      Done
+    </button>
+
+  </div>
+
+</div>
+
+<div id="failedModal" class="success-modal">
+
+  <div class="success-box">
+
+    <div
+    class="success-icon"
+    style="
+    background:#ef4444;
+    ">
+
+      ✕
+
+    </div>
+
+    <h2>Payment Failed</h2>
+
+    <p id="failureReason">
+
+    </p>
+
+    <button onclick="closeFailed()">
+
+      Try Again
+
+    </button>
+
+  </div>
+
+</div>
+<script src="script.js"></script>
+
+</body>
+</html>
