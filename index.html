@@ -1,370 +1,498 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>BizTab Payment Gateway</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BizTab Payment Gateway</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<nav class="navbar">
-
-<div class="logo">
-BizTab Gateway
-</div>
-
-<div class="secure">
-🔒 Secure Environment
-</div>
-
-</nav>
-
-<section class="hero">
-
-<h1>
-Enterprise Payment Gateway Simulator
-</h1>
-
-<p>
-Demonstrating payment authorization,
-OTP verification,
-transaction processing,
-and settlement workflows.
-</p>
-
-</section>
-
-<section class="security">
-
-<div class="badge">SSL Secured</div>
-<div class="badge">PCI DSS</div>
-<div class="badge">Bank Grade Security</div>
-<div class="badge">24/7 Monitoring</div>
-
-</section>
-
-<div class="dashboard">
-
-<div class="order-card">
-
-<h2>Order Summary</h2>
-
-<div class="row">
-<span>Product</span>
-<span>Premium Plan</span>
-</div>
-
-<div class="row">
-<span>Duration</span>
-<span>Annual</span>
-</div>
-
-<div class="row">
-<span>Tax</span>
-<span>₹180</span>
-</div>
-
-<div class="row total">
-<span>Total</span>
-<span>₹1,999</span>
-</div>
-
-</div>
-
-<div class="payment-card">
-
-<h2>Choose Payment Method</h2>
-
-<div class="method-grid">
-
-<div class="method-box active"
-onclick="showMethod('card',this)">
-
-💳
-
-<span>Card</span>
-
-</div>
-
-<div class="method-box"
-onclick="showMethod('upi',this)">
-
-📱
-
-<span>UPI</span>
-
-</div>
-
-<div class="method-box"
-onclick="showMethod('bank',this)">
-
-🏦
-
-<span>Net Banking</span>
-
-</div>
-
-</div>
-
-<!-- CARD -->
-
-<div id="cardSection">
-
-<input
-type="text"
-id="cardName"
-placeholder="Cardholder Name">
-
-<input
-type="text"
-id="cardNumber"
-placeholder="1234 5678 9012 3456"
-maxlength="19"
-oninput="formatCard(this)">
-
-<div class="two-col">
-
-<input
-type="text"
-id="expiry"
-placeholder="MM/YY"
-maxlength="5"
-oninput="formatExpiry(this)">
-
-<input
-type="password"
-id="cvv"
-placeholder="CVV"
-maxlength="3"
-oninput="formatCVV(this)">
-
-</div>
-
-</div>
-
-<!-- UPI -->
-
-<div id="upiSection" style="display:none;">
-
-<input
-type="text"
-id="upiId"
-placeholder="example@upi">
-
-<div class="upi-box">
-
-🟢 Google Pay
-
-</div>
-
-<div class="upi-box">
-
-🟣 PhonePe
-
-</div>
-
-<div class="upi-box">
-
-🔵 Paytm
-
-</div>
-
-</div>
-
-<!-- BANK -->
-
-<div id="bankSection" style="display:none;">
-
-<select id="bankName">
-
-<option value="">
-Select Bank
-</option>
-
-<option>
-State Bank of India
-</option>
-
-<option>
-HDFC Bank
-</option>
-
-<option>
-ICICI Bank
-</option>
-
-<option>
-Axis Bank
-</option>
-
-</select>
-
-<input
-type="text"
-id="accountNumber"
-placeholder="Account Number">
-
-</div>
-
-<button onclick="startPayment()">
-
-Pay ₹1,999
-
-</button>
-
-<div id="paymentMessage"></div>
-
-</div>
-
-</div>
-
-<!-- OTP MODAL -->
-
-<div id="otpModal" class="modal">
-
-  <div class="otp-modal-box">
-
-    <div class="otp-icon">
-      🔐
+  <!-- CHANGED: Animated 3-D canvas background -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- ─── NAVBAR ──────────────────────────────────────────────────────────── -->
+  <!-- CHANGED: Enhanced navbar with status badge; text/logo unchanged -->
+  <nav class="navbar">
+    <div class="logo">
+      <!-- CHANGED: Added SVG logo mark before text -->
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;margin-right:8px">
+        <rect width="32" height="32" rx="9" fill="url(#navLg)"/>
+        <path d="M8 16l5 5 11-10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs>
+          <linearGradient id="navLg" x1="0" y1="0" x2="32" y2="32">
+            <stop offset="0%" stop-color="#2563EB"/>
+            <stop offset="100%" stop-color="#7C3AED"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      BizTab Gateway
     </div>
-
-    <h2>OTP Verification</h2>
-
-    <p class="otp-subtitle">
-
-      We've sent a secure verification code
-      to your registered mobile number
-
-      <br><br>
-
-      <strong>+91 •••• ••9876</strong>
-
-    </p>
-
-    <div class="otp-grid">
-
-      <input maxlength="1" id="o1"
-      oninput="nextOTP(this,'o2')">
-
-      <input maxlength="1" id="o2"
-      oninput="nextOTP(this,'o3')">
-
-      <input maxlength="1" id="o3"
-      oninput="nextOTP(this,'o4')">
-
-      <input maxlength="1" id="o4">
-
+    <!-- CHANGED: status badge replaces plain text -->
+    <div class="nav-center">
+      <span class="secure">🔒 Secure Environment</span>
+      <span class="nav-status">● Live</span>
     </div>
-
-    <div class="otp-info">
-
-      Demo OTP :
-      <strong>1234</strong>
-
+    <div class="nav-right">
+      <button class="nav-logout-btn" onclick="window.location.href='login.html'">Log Out</button>
     </div>
+  </nav>
 
-    <button
-    class="verify-btn"
-    onclick="verifyOTP()">
-
-      Verify Payment
-
-    </button>
-
-    <p class="resend">
-
-      Didn't receive OTP?
-
-      <span>Resend</span>
-
-    </p>
-
-  </div>
-
-</div>
-
-<div id="successModal" class="success-modal">
-
-  <div class="success-box">
-
-    <div class="success-icon">
-      ✓
+  <!-- ─── HERO ────────────────────────────────────────────────────────────── -->
+  <!-- UNCHANGED: same text content, class kept for CSS, just wrapped for animation -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Enterprise Payment Gateway Simulator</h1>
+      <p>
+        Demonstrating payment authorization,
+        OTP verification,
+        transaction processing,
+        and settlement workflows.
+      </p>
     </div>
+  </section>
 
-    <h2>Payment Successful</h2>
+  <!-- ─── SECURITY BADGES ─────────────────────────────────────────────────── -->
+  <!-- UNCHANGED: same 4 badges -->
+  <section class="security">
+    <div class="badge">SSL Secured</div>
+    <div class="badge">PCI DSS</div>
+    <div class="badge">Bank Grade Security</div>
+    <div class="badge">24/7 Monitoring</div>
+  </section>
 
-    <p>
-      Your transaction has been completed successfully.
-    </p>
+  <!-- ─── MAIN DASHBOARD ──────────────────────────────────────────────────── -->
+  <div class="dashboard">
 
-    <div class="receipt">
-
-      <div class="receipt-row">
-        <span>Transaction ID</span>
-        <span id="txnId"></span>
+    <!-- ── ORDER SUMMARY ── -->
+    <!-- UNCHANGED: all IDs, text, values identical to original -->
+    <div class="order-card">
+      <h2>Order Summary</h2>
+      <div class="row">
+        <span>Product</span>
+        <span>Premium Plan</span>
       </div>
-
-      <div class="receipt-row">
-        <span>Amount</span>
+      <div class="row">
+        <span>Duration</span>
+        <span>Annual</span>
+      </div>
+      <div class="row">
+        <span>Tax</span>
+        <span>₹180</span>
+      </div>
+      <div class="row total">
+        <span>Total</span>
         <span>₹1,999</span>
       </div>
+      <!-- CHANGED: Added trust section below order total -->
+      <div class="order-trust">
+        <span class="trust-item">🔐 256-bit Encrypted</span>
+        <span class="trust-item">✅ Zero Liability</span>
+      </div>
+    </div>
 
-      <div class="receipt-row">
-        <span>Status</span>
-        <span class="success-status">
-          Successful
-        </span>
+    <!-- ── PAYMENT CARD ── -->
+    <div class="payment-card">
+      <h2>Choose Payment Method</h2>
+
+      <!-- CHANGED: method-grid items now have icon wrappers for richer UI -->
+      <div class="method-grid">
+        <div class="method-box active" onclick="showMethod('card', this)">
+          <span class="method-icon">💳</span>
+          <span class="method-label">Card</span>
+        </div>
+        <div class="method-box" onclick="showMethod('upi', this)">
+          <span class="method-icon">📱</span>
+          <span class="method-label">UPI</span>
+        </div>
+        <div class="method-box" onclick="showMethod('bank', this)">
+          <span class="method-icon">🏦</span>
+          <span class="method-label">Net Banking</span>
+        </div>
       </div>
 
+      <!-- ── CARD SECTION ── -->
+      <!-- UNCHANGED: all IDs preserved. CHANGED: added floating card preview -->
+      <div id="cardSection">
+
+        <!-- CHANGED: Live card preview (purely visual) -->
+        <div class="card-preview" id="cardPreview">
+          <div class="card-preview-chip"></div>
+          <div class="card-preview-number" id="previewNumber">•••• •••• •••• ••••</div>
+          <div class="card-preview-row">
+            <div>
+              <div class="card-preview-label">Card Holder</div>
+              <div class="card-preview-value" id="previewName">YOUR NAME</div>
+            </div>
+            <div>
+              <div class="card-preview-label">Expires</div>
+              <div class="card-preview-value" id="previewExpiry">MM/YY</div>
+            </div>
+            <div>
+              <div class="card-preview-label">Network</div>
+              <div class="card-preview-value" id="previewNetwork">VISA</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UNCHANGED: exact IDs kept, added input-wrapper for label -->
+        <div class="input-wrap">
+          <label class="field-label">Cardholder Name</label>
+          <input type="text" id="cardName" placeholder="As printed on card"
+                 oninput="updatePreview()">
+        </div>
+
+        <div class="input-wrap">
+          <label class="field-label">Card Number</label>
+          <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456"
+                 maxlength="19"
+                 oninput="formatCard(this); updatePreview()">
+        </div>
+
+        <div class="two-col">
+          <div class="input-wrap">
+            <label class="field-label">Expiry</label>
+            <input type="text" id="expiry" placeholder="MM/YY" maxlength="5"
+                   oninput="formatExpiry(this); updatePreview()">
+          </div>
+          <div class="input-wrap">
+            <label class="field-label">CVV</label>
+            <input type="password" id="cvv" placeholder="•••" maxlength="3"
+                   oninput="formatCVV(this)">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── UPI SECTION ── -->
+      <!-- UNCHANGED: IDs kept. CHANGED: UPI apps visually enhanced -->
+      <div id="upiSection" style="display:none;">
+        <div class="input-wrap">
+          <label class="field-label">UPI ID</label>
+          <input type="text" id="upiId" placeholder="example@upi">
+        </div>
+        <div class="upi-apps">
+          <div class="upi-box" onclick="selectUPI(this,'user@oksbi')">
+            <span class="upi-icon">🟢</span>
+            <span>Google Pay</span>
+          </div>
+          <div class="upi-box" onclick="selectUPI(this,'user@ybl')">
+            <span class="upi-icon">🟣</span>
+            <span>PhonePe</span>
+          </div>
+          <div class="upi-box" onclick="selectUPI(this,'user@paytm')">
+            <span class="upi-icon">🔵</span>
+            <span>Paytm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NET BANKING SECTION ── -->
+      <!-- UNCHANGED: IDs kept -->
+      <div id="bankSection" style="display:none;">
+        <div class="input-wrap">
+          <label class="field-label">Select Bank</label>
+          <select id="bankName">
+            <option value="">Select Bank</option>
+            <option>State Bank of India</option>
+            <option>HDFC Bank</option>
+            <option>ICICI Bank</option>
+            <option>Axis Bank</option>
+            <option>Kotak Mahindra Bank</option>
+            <option>Punjab National Bank</option>
+          </select>
+        </div>
+        <div class="input-wrap">
+          <label class="field-label">Account Number</label>
+          <input type="text" id="accountNumber" placeholder="Account Number">
+        </div>
+      </div>
+
+      <!-- UNCHANGED: button ID + onclick kept exactly -->
+      <button onclick="startPayment()">Pay ₹1,999</button>
+      <div id="paymentMessage"></div>
+    </div><!-- /payment-card -->
+  </div><!-- /dashboard -->
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!--  OTP MODAL                                                            -->
+  <!--  CHANGED: z-index fixed (9999), improved design + animations.        -->
+  <!--  UNCHANGED: all IDs (otpModal, o1–o4), all onclick handlers          -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div id="otpModal" class="modal">
+    <div class="otp-modal-box">
+
+      <!-- CHANGED: animated shield wrapper -->
+      <div class="otp-shield-wrap">
+        <div class="otp-icon">🔐</div>
+        <div class="otp-shield-ring"></div>
+      </div>
+
+      <h2>OTP Verification</h2>
+      <p class="otp-subtitle">
+        We've sent a secure code to your registered mobile
+        <br><strong class="otp-phone">+91 •••• ••9876</strong>
+      </p>
+
+      <!-- UNCHANGED: IDs o1-o4 + oninput handlers -->
+      <div class="otp-grid">
+        <input maxlength="1" id="o1" class="otp-digit" inputmode="numeric"
+               oninput="nextOTP(this,'o2')">
+        <input maxlength="1" id="o2" class="otp-digit" inputmode="numeric"
+               oninput="nextOTP(this,'o3')">
+        <input maxlength="1" id="o3" class="otp-digit" inputmode="numeric"
+               oninput="nextOTP(this,'o4')">
+        <input maxlength="1" id="o4" class="otp-digit" inputmode="numeric">
+      </div>
+
+      <div class="otp-info">
+        Demo OTP: <strong class="otp-code">1234</strong>
+      </div>
+
+      <!-- CHANGED: added countdown timer display -->
+      <div class="otp-timer">
+        Resend in <span id="otpTimerCount">30</span>s
+      </div>
+
+      <!-- UNCHANGED: onclick handler -->
+      <button class="verify-btn" onclick="verifyOTP()">Verify Payment</button>
+
+      <!-- UNCHANGED: Resend text; CHANGED: now a clickable button -->
+      <p class="resend">
+        Didn't receive OTP?
+        <span onclick="resendOTP()">Resend</span>
+      </p>
     </div>
-
-    <button onclick="closeSuccess()">
-      Done
-    </button>
-
   </div>
 
-</div>
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!--  SUCCESS MODAL                                                        -->
+  <!--  CHANGED: receipt-style design. UNCHANGED: id="successModal",        -->
+  <!--  id="txnId", onclick="closeSuccess()"                                -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div id="successModal" class="success-modal">
+    <div class="success-box">
 
-<div id="failedModal" class="success-modal">
+      <!-- CHANGED: animated ring + checkmark -->
+      <div class="success-anim-wrap">
+        <div class="success-ring"></div>
+        <div class="success-icon">✓</div>
+      </div>
 
-  <div class="success-box">
+      <h2>Payment Successful</h2>
+      <p class="success-sub">Your transaction has been completed successfully.</p>
 
-    <div
-    class="success-icon"
-    style="
-    background:#ef4444;
-    ">
+      <!-- CHANGED: full receipt card design -->
+      <div class="receipt-card">
+        <div class="receipt-row">
+          <span class="receipt-lbl">Transaction ID</span>
+          <span class="receipt-val mono" id="txnId"></span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-lbl">Amount</span>
+          <span class="receipt-val">₹1,999.00</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-lbl">Date &amp; Time</span>
+          <span class="receipt-val" id="txnDate"></span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-lbl">Payment Method</span>
+          <span class="receipt-val" id="txnMethod"></span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-lbl">Status</span>
+          <span class="receipt-val success-status">● Successful</span>
+        </div>
+      </div>
 
-      ✕
-
+      <!-- UNCHANGED: onclick handler -->
+      <button onclick="closeSuccess()">Done</button>
     </div>
-
-    <h2>Payment Failed</h2>
-
-    <p id="failureReason">
-
-    </p>
-
-    <button onclick="closeFailed()">
-
-      Try Again
-
-    </button>
-
   </div>
 
-</div>
-<script src="script.js"></script>
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!--  FAILURE MODAL                                                        -->
+  <!--  CHANGED: receipt-style with error detail.                           -->
+  <!--  UNCHANGED: id="failedModal", id="failureReason", onclick handler    -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div id="failedModal" class="success-modal">
+    <div class="success-box failure-box">
 
+      <div class="failure-anim-wrap">
+        <div class="failure-ring"></div>
+        <div class="success-icon failure-icon">✕</div>
+      </div>
+
+      <h2>Payment Failed</h2>
+
+      <div class="receipt-card failure-receipt">
+        <div class="receipt-row">
+          <span class="receipt-lbl">Reason</span>
+          <span class="receipt-val danger-text" id="failureReason"></span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-lbl">Amount</span>
+          <span class="receipt-val">₹1,999.00</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-lbl">Status</span>
+          <span class="receipt-val failure-status">● Failed</span>
+        </div>
+      </div>
+
+      <!-- UNCHANGED: onclick handler -->
+      <button onclick="closeFailed()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- UNCHANGED: script.js is loaded exactly as in original -->
+  <script src="script.js"></script>
+
+  <!-- CHANGED: purely visual background + preview helpers, no logic changes -->
+  <script>
+    /* ── Animated canvas background ── */
+    (function () {
+      var c = document.getElementById('bgCanvas');
+      var ctx = c.getContext('2d');
+      function resize() { c.width = innerWidth; c.height = innerHeight; }
+      resize();
+      window.addEventListener('resize', resize);
+
+      var pts = [];
+      for (var i = 0; i < 80; i++) {
+        pts.push({
+          x: Math.random() * innerWidth,
+          y: Math.random() * innerHeight,
+          r: Math.random() * 1.5 + 0.3,
+          vx: (Math.random() - .5) * .3,
+          vy: (Math.random() - .5) * .3,
+          a: Math.random() * .45 + .1,
+          col: ['96,165,250','167,139,250','6,182,212'][Math.floor(Math.random()*3)]
+        });
+      }
+      var orbs = [
+        { ox:.15, oy:.3, r:220, col:'37,99,235',  a:.12, t:0 },
+        { ox:.8,  oy:.7, r:270, col:'124,58,237', a:.09, t:2 },
+        { ox:.5,  oy:.05,r:150, col:'6,182,212',  a:.07, t:4 }
+      ];
+      function draw() {
+        ctx.clearRect(0,0,c.width,c.height);
+        orbs.forEach(function(o) {
+          o.t+=.004;
+          var cx=(o.ox+Math.sin(o.t)*.06)*c.width;
+          var cy=(o.oy+Math.cos(o.t*.8)*.06)*c.height;
+          var g=ctx.createRadialGradient(cx,cy,0,cx,cy,o.r);
+          g.addColorStop(0,'rgba('+o.col+','+o.a+')');
+          g.addColorStop(1,'rgba('+o.col+',0)');
+          ctx.fillStyle=g; ctx.beginPath();
+          ctx.arc(cx,cy,o.r,0,Math.PI*2); ctx.fill();
+        });
+        ctx.strokeStyle='rgba(255,255,255,.022)'; ctx.lineWidth=1;
+        for(var x=0;x<c.width;x+=58){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}
+        for(var y=0;y<c.height;y+=58){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
+        pts.forEach(function(p){
+          p.x+=p.vx; p.y+=p.vy;
+          if(p.x<0)p.x=c.width; if(p.x>c.width)p.x=0;
+          if(p.y<0)p.y=c.height; if(p.y>c.height)p.y=0;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle='rgba('+p.col+','+p.a+')'; ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    /* ── Live card preview updater ── */
+    function updatePreview() {
+      var raw = (document.getElementById('cardNumber').value || '').replace(/\s/g,'');
+      var chunks = (raw || '').match(/.{1,4}/g) || [];
+      while(chunks.length<4) chunks.push('');
+      var display = chunks.map(function(ch){ return (ch+'••••').slice(0,4); }).join(' ');
+      document.getElementById('previewNumber').textContent = display;
+
+      var name = (document.getElementById('cardName').value || '').toUpperCase() || 'YOUR NAME';
+      document.getElementById('previewName').textContent = name.slice(0,22);
+
+      document.getElementById('previewExpiry').textContent =
+        document.getElementById('expiry').value || 'MM/YY';
+
+      /* Detect card network by first digit */
+      var net = 'VISA';
+      if(raw[0]==='5') net='MC';
+      else if(raw[0]==='3') net='AMEX';
+      else if(raw[0]==='6') net='RuPay';
+      document.getElementById('previewNetwork').textContent = net;
+    }
+
+    /* ── UPI app quick-fill ── */
+    function selectUPI(el, id) {
+      document.querySelectorAll('.upi-box').forEach(function(b){ b.classList.remove('selected'); });
+      el.classList.add('selected');
+      document.getElementById('upiId').value = id;
+    }
+
+    /* ── OTP countdown timer ── */
+    var otpInterval;
+    function startOTPTimer() {
+      clearInterval(otpInterval);
+      var count = 30;
+      var el = document.getElementById('otpTimerCount');
+      if(el) el.textContent = count;
+      otpInterval = setInterval(function(){
+        count--;
+        if(el) el.textContent = count;
+        if(count<=0) clearInterval(otpInterval);
+      },1000);
+    }
+
+    function resendOTP() {
+      ['o1','o2','o3','o4'].forEach(function(id){
+        document.getElementById(id).value='';
+      });
+      document.getElementById('o1').focus();
+      startOTPTimer();
+    }
+
+    /* Hook into original showOTP so timer starts when modal opens */
+    var _origStartPayment = window.startPayment;
+    /* script.js sets otpModal display inline — we watch for it */
+    var _observer = new MutationObserver(function(muts){
+      muts.forEach(function(m){
+        var modal = document.getElementById('otpModal');
+        if(modal && modal.style.display !== 'none' && modal.style.display !== '') {
+          startOTPTimer();
+          document.getElementById('o1').focus();
+        }
+      });
+    });
+    var _modal = document.getElementById('otpModal');
+    if(_modal) _observer.observe(_modal, {attributes:true, attributeFilter:['style']});
+
+    /* Populate extra receipt fields when successModal opens */
+    var _successObserver = new MutationObserver(function(){
+      var sm = document.getElementById('successModal');
+      if(sm && sm.style.display !== 'none' && sm.style.display !== '') {
+        var now = new Date();
+        var el = document.getElementById('txnDate');
+        if(el) el.textContent = now.toLocaleString('en-IN',{
+          day:'2-digit',month:'short',year:'numeric',
+          hour:'2-digit',minute:'2-digit'
+        });
+        var mEl = document.getElementById('txnMethod');
+        /* Detect active method from visible section */
+        if(mEl) {
+          var cardSec = document.getElementById('cardSection');
+          var upiSec  = document.getElementById('upiSection');
+          var bankSec = document.getElementById('bankSection');
+          if(upiSec && upiSec.style.display!=='none') mEl.textContent='UPI';
+          else if(bankSec && bankSec.style.display!=='none') mEl.textContent='Net Banking';
+          else mEl.textContent='Card';
+        }
+      }
+    });
+    var _sm = document.getElementById('successModal');
+    if(_sm) _successObserver.observe(_sm, {attributes:true, attributeFilter:['style']});
+  </script>
 </body>
 </html>
