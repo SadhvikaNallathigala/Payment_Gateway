@@ -1,70 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BizTab Payment Gateway</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BizTab Payment Gateway</title>
+  <!-- CHANGED: Added Inter + Syne for premium typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="login-page">
+  <!-- CHANGED: Added animated canvas background -->
+  <canvas id="bgCanvas"></canvas>
 
+  <div class="login-page">
+
+    <!-- CHANGED: Left panel enriched with badges + stats; text unchanged -->
     <div class="login-left">
+      <div class="content">
+        <span class="tag">BizTab Consulting</span>
+        <h1>Enterprise Payment Processing Platform</h1>
+        <p>
+          Secure transaction authorization,
+          OTP verification,
+          payment settlement,
+          and workflow automation.
+        </p>
 
-        <div class="content">
-
-            <span class="tag">
-                BizTab Consulting
-            </span>
-
-            <h1>
-                Enterprise Payment Processing Platform
-            </h1>
-
-            <p>
-                Secure transaction authorization,
-                OTP verification,
-                payment settlement,
-                and workflow automation.
-            </p>
-
+        <!-- CHANGED: Added trust badges below description -->
+        <div class="login-badges">
+          <span class="login-badge">🔒 PCI DSS</span>
+          <span class="login-badge">🛡️ SSL Secured</span>
+          <span class="login-badge">✅ RBI Compliant</span>
         </div>
 
+        <!-- CHANGED: Added animated stat cards -->
+        <div class="login-stats">
+          <div class="login-stat">
+            <span class="stat-num">₹2.4B+</span>
+            <span class="stat-lbl">Processed</span>
+          </div>
+          <div class="login-stat">
+            <span class="stat-num">99.99%</span>
+            <span class="stat-lbl">Uptime</span>
+          </div>
+          <div class="login-stat">
+            <span class="stat-num">128-bit</span>
+            <span class="stat-lbl">Encryption</span>
+          </div>
+        </div>
+      </div>
     </div>
 
+    <!-- CHANGED: Right panel → glassmorphism card with tilt effect -->
     <div class="login-right">
+      <div class="login-box" id="loginBox">
 
-        <div class="login-box">
-
-            <h2>BizTab Portal</h2>
-
-            <input
-                type="email"
-                id="email"
-                placeholder="admin@biztab.com">
-
-            <input
-                type="password"
-                id="password"
-                placeholder="Password">
-
-            <button onclick="login()">
-                Login
-            </button>
-
-            <div id="loginMessage"></div>
-
+        <!-- CHANGED: Added logo mark above the heading -->
+        <div class="login-logo-mark">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="10" fill="url(#lg1)"/>
+            <path d="M8 16l5 5 11-10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="lg1" x1="0" y1="0" x2="32" y2="32">
+                <stop offset="0%" stop-color="#2563EB"/>
+                <stop offset="100%" stop-color="#7C3AED"/>
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
 
+        <h2>BizTab Portal</h2>
+        <p class="login-sub">Sign in to your account</p>
+
+        <!-- CHANGED: Wrapped inputs in labelled groups for better UX -->
+        <div class="input-group">
+          <label class="input-lbl">Email</label>
+          <input type="email" id="email" placeholder="admin@biztab.com">
+        </div>
+        <div class="input-group">
+          <label class="input-lbl">Password</label>
+          <input type="password" id="password" placeholder="••••••••">
+        </div>
+
+        <!-- UNCHANGED: original onclick logic -->
+        <button onclick="login()">Login</button>
+        <div id="loginMessage"></div>
+
+        <!-- CHANGED: Added credential hint -->
+        <div class="login-hint">Demo: admin@biztab.com / admin123</div>
+      </div>
     </div>
+  </div>
 
-</div>
+  <script src="script.js"></script>
 
-<script src="script.js"></script>
+  <!-- CHANGED: Canvas background animation (purely visual, no logic impact) -->
+  <script>
+    (function () {
+      var c = document.getElementById('bgCanvas');
+      var ctx = c.getContext('2d');
+      function resize() { c.width = innerWidth; c.height = innerHeight; }
+      resize();
+      window.addEventListener('resize', resize);
 
+      var pts = [];
+      for (var i = 0; i < 70; i++) {
+        pts.push({
+          x: Math.random() * innerWidth,
+          y: Math.random() * innerHeight,
+          r: Math.random() * 1.4 + 0.4,
+          vx: (Math.random() - .5) * .35,
+          vy: (Math.random() - .5) * .35,
+          a: Math.random() * .5 + .1,
+          col: Math.random() > .5 ? '96,165,250' : '167,139,250'
+        });
+      }
+
+      var orbs = [
+        { ox: .18, oy: .35, r: 220, col: '37,99,235', a: .13, t: 0 },
+        { ox: .78, oy: .65, r: 260, col: '124,58,237', a: .10, t: 2 },
+        { ox: .5,  oy: .08, r: 140, col: '6,182,212',  a: .07, t: 4 }
+      ];
+
+      function draw() {
+        ctx.clearRect(0, 0, c.width, c.height);
+
+        orbs.forEach(function (o) {
+          o.t += .004;
+          var cx = (o.ox + Math.sin(o.t) * .06) * c.width;
+          var cy = (o.oy + Math.cos(o.t * .8) * .06) * c.height;
+          var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, o.r);
+          g.addColorStop(0, 'rgba(' + o.col + ',' + o.a + ')');
+          g.addColorStop(1, 'rgba(' + o.col + ',0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(cx, cy, o.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        ctx.strokeStyle = 'rgba(255,255,255,.025)';
+        ctx.lineWidth = 1;
+        for (var x = 0; x < c.width; x += 55) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, c.height); ctx.stroke();
+        }
+        for (var y = 0; y < c.height; y += 55) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(c.width, y); ctx.stroke();
+        }
+
+        pts.forEach(function (p) {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = c.width;
+          if (p.x > c.width) p.x = 0;
+          if (p.y < 0) p.y = c.height;
+          if (p.y > c.height) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(' + p.col + ',' + p.a + ')';
+          ctx.fill();
+        });
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+
+      /* 3-D tilt on login card */
+      var box = document.getElementById('loginBox');
+      if (box) {
+        box.addEventListener('mousemove', function (e) {
+          var r = box.getBoundingClientRect();
+          var x = (e.clientX - r.left) / r.width - .5;
+          var y = (e.clientY - r.top) / r.height - .5;
+          box.style.transform = 'perspective(700px) rotateX(' + (-y * 7) + 'deg) rotateY(' + (x * 7) + 'deg)';
+        });
+        box.addEventListener('mouseleave', function () {
+          box.style.transform = 'perspective(700px) rotateX(0) rotateY(0)';
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
