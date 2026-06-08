@@ -54,7 +54,7 @@ function login() {
     msg.style.color = '#22c55e';
     msg.textContent = '✓ Login successful! Redirecting...';
     setTimeout(function () {
-      window.location.href = 'index.html';
+      window.location.href = 'payment.html';
     }, 1200);
   } else {
     msg.style.color = '#ef4444';
