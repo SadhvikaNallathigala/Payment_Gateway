@@ -194,8 +194,6 @@ Potential improvements include:
 
 **Sadhvika Nallathigala**
 
-Student ID: 23STUCHH011375
-
 📧 Email: [sadhvikanallathigala23@ifheindia.org](mailto:sadhvikanallathigala23@ifheindia.org)
 
 🔗 GitHub: https://github.com/SadhvikaNallathigala
