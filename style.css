@@ -29,12 +29,20 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html, body { width:100%; min-height:100%; }
 
-body {
-  font-family: 'Poppins', 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
+body{
+  font-family:'Poppins','Inter',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  color:white;
+
+  background:
+  radial-gradient(circle at 20% 20%, rgba(59,130,246,.25), transparent 30%),
+  radial-gradient(circle at 80% 30%, rgba(168,85,247,.25), transparent 35%),
+  radial-gradient(circle at 50% 80%, rgba(6,182,212,.20), transparent 35%),
+  linear-gradient(135deg,#0f172a,#111827,#1e1b4b);
+
+  background-size:400% 400%;
+  animation: bgShift 15s ease infinite;
 }
 
 /* ── ANIMATED CANVAS BACKGROUND ────────────────────────── */
@@ -47,6 +55,41 @@ body {
   pointer-events: none;
 }
 
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  border-radius:50%;
+  filter:blur(120px);
+  z-index:-1;
+  animation:floatBlob 18s infinite ease-in-out;
+}
+
+body::before{
+  width:500px;
+  height:500px;
+  background:rgba(37,99,235,.35);
+  top:-100px;
+  left:-100px;
+}
+
+body::after{
+  width:450px;
+  height:450px;
+  background:rgba(124,58,237,.35);
+  bottom:-100px;
+  right:-100px;
+  animation-delay:6s;
+}
+
+@keyframes floatBlob{
+  0%,100%{
+    transform:translate(0,0) scale(1);
+  }
+  50%{
+    transform:translate(80px,-60px) scale(1.2);
+  }
+}
 /* ── UTILITY: GLASSMORPHISM ─────────────────────────────── */
 .glass {
   background: var(--surface);
@@ -1065,6 +1108,44 @@ select:focus {
 }
 
 /* ══════════════════════════════════════════════════════════
+   FIELD-LEVEL VALIDATION  ▲ NEW
+   .field-error — inline error message below each input
+   .input-error — red border state on the input itself
+   ═════════════════════════════════════════════════════════ */
+
+/* Error message span that appears below an input */
+.field-error {
+  display: none;                          /* shown via JS showFieldError() */
+  font-size: 0.72rem;
+  color: var(--danger);
+  margin-top: 0.35rem;
+  padding-left: 0.15rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  animation: error-slide-in 0.2s ease both;
+}
+@keyframes error-slide-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Red border + glow on a field that failed validation */
+input.input-error,
+select.input-error {
+  border-color: rgba(239, 68, 68, 0.65) !important;
+  background:   rgba(239, 68, 68, 0.06) !important;
+  box-shadow:   0 0 0 3px rgba(239, 68, 68, 0.12),
+                0 0 16px rgba(239, 68, 68, 0.10) !important;
+}
+/* Remove red state on focus — visual feedback that user is correcting */
+input.input-error:focus,
+select.input-error:focus {
+  border-color: rgba(37, 99, 235, 0.6) !important;
+  background:   rgba(37, 99, 235, 0.06) !important;
+  box-shadow:   0 0 0 3px rgba(37, 99, 235, 0.14) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
    RESPONSIVE
    ═════════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
@@ -1104,25 +1185,38 @@ select:focus {
   .login-badges { gap: 0.4rem; }
 }
 
-/* Fix dropdown option colors */
+/* NET BANKING DROPDOWN FIX */
 
-select{
-    background:#0f172a;
-    color:#ffffff;
+#bankName {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid #2563eb;
 }
 
-select option{
-    background:#0f172a;
-    color:#ffffff;
-    padding:10px;
+#bankName option {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  padding: 12px;
 }
 
-select option:hover{
-    background:#2563eb;
-    color:#ffffff;
+#bankName option:hover {
+  background: #2563eb !important;
+  color: #ffffff !important;
 }
 
-select option:checked{
-    background:#2563eb;
-    color:#ffffff;
+#bankName option:checked {
+  background: linear-gradient(135deg,#2563eb,#7c3aed);
+  color: white;
+}
+
+@keyframes bgShift{
+  0%{
+    background-position:0% 50%;
+  }
+  50%{
+    background-position:100% 50%;
+  }
+  100%{
+    background-position:0% 50%;
+  }
 }
