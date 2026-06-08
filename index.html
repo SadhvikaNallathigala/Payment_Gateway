@@ -140,26 +140,38 @@
         <div class="input-wrap">
           <label class="field-label">Cardholder Name</label>
           <input type="text" id="cardName" placeholder="As printed on card"
-                 oninput="updatePreview()">
+                 oninput="formatCardName(this); updatePreview()"
+                 autocomplete="cc-name">
+          <!-- ▲ Inline error span for cardholder name -->
+          <span class="field-error" id="cardNameErr" style="display:none;"></span>
         </div>
 
         <div class="input-wrap">
           <label class="field-label">Card Number</label>
           <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456"
                  maxlength="19"
-                 oninput="formatCard(this); updatePreview()">
+                 oninput="formatCard(this); updatePreview()"
+                 autocomplete="cc-number" inputmode="numeric">
+          <!-- ▲ Inline error span for card number -->
+          <span class="field-error" id="cardNumberErr" style="display:none;"></span>
         </div>
 
         <div class="two-col">
           <div class="input-wrap">
             <label class="field-label">Expiry</label>
             <input type="text" id="expiry" placeholder="MM/YY" maxlength="5"
-                   oninput="formatExpiry(this); updatePreview()">
+                   oninput="formatExpiry(this); updatePreview()"
+                   autocomplete="cc-exp" inputmode="numeric">
+            <!-- ▲ Inline error span for expiry -->
+            <span class="field-error" id="expiryErr" style="display:none;"></span>
           </div>
           <div class="input-wrap">
             <label class="field-label">CVV</label>
             <input type="password" id="cvv" placeholder="•••" maxlength="3"
-                   oninput="formatCVV(this)">
+                   oninput="formatCVV(this)"
+                   autocomplete="cc-csc" inputmode="numeric">
+            <!-- ▲ Inline error span for CVV -->
+            <span class="field-error" id="cvvErr" style="display:none;"></span>
           </div>
         </div>
       </div>
@@ -169,7 +181,11 @@
       <div id="upiSection" style="display:none;">
         <div class="input-wrap">
           <label class="field-label">UPI ID</label>
-          <input type="text" id="upiId" placeholder="example@upi">
+          <input type="text" id="upiId" placeholder="example@upi"
+                 oninput="clearFieldError('upiId')"
+                 autocomplete="off">
+          <!-- ▲ Inline error span for UPI ID -->
+          <span class="field-error" id="upiIdErr" style="display:none;"></span>
         </div>
         <div class="upi-apps">
           <div class="upi-box" onclick="selectUPI(this,'user@oksbi')">
@@ -192,7 +208,7 @@
       <div id="bankSection" style="display:none;">
         <div class="input-wrap">
           <label class="field-label">Select Bank</label>
-          <select id="bankName">
+          <select id="bankName" onchange="clearFieldError('bankName')">
             <option value="">Select Bank</option>
             <option>State Bank of India</option>
             <option>HDFC Bank</option>
@@ -201,10 +217,16 @@
             <option>Kotak Mahindra Bank</option>
             <option>Punjab National Bank</option>
           </select>
+          <!-- ▲ Inline error span for bank selection -->
+          <span class="field-error" id="bankNameErr" style="display:none;"></span>
         </div>
         <div class="input-wrap">
           <label class="field-label">Account Number</label>
-          <input type="text" id="accountNumber" placeholder="Account Number">
+          <input type="text" id="accountNumber" placeholder="9–18 digit account number"
+                 maxlength="18" inputmode="numeric"
+                 oninput="formatAccountNumber(this)">
+          <!-- ▲ Inline error span for account number -->
+          <span class="field-error" id="accountNumberErr" style="display:none;"></span>
         </div>
       </div>
 
