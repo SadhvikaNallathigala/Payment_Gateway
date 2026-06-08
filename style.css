@@ -1220,3 +1220,12 @@ select.input-error:focus {
     background-position:0% 50%;
   }
 }
+
+.success-actions{
+  display:flex;
+  gap:10px;
+}
+
+.success-actions button{
+  flex:1;
+}
