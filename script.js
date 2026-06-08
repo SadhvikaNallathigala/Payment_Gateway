@@ -778,3 +778,52 @@ function launchConfetti() {
   }
   anim();
 }
+
+function downloadReceipt() {
+
+  const txnId =
+    document.getElementById('txnId').textContent;
+
+  const amount = "₹1,999.00";
+
+  const method =
+    document.getElementById('txnMethod').textContent;
+
+  const date =
+    document.getElementById('txnDate').textContent;
+
+  const receipt = `
+==================================
+      BIZTAB PAYMENT RECEIPT
+==================================
+
+Transaction ID : ${txnId}
+Amount         : ${amount}
+Payment Method : ${method}
+Date & Time    : ${date}
+Status         : SUCCESSFUL
+
+==================================
+Thank you for using BizTab Gateway
+==================================
+`;
+
+  const blob = new Blob(
+    [receipt],
+    { type: 'text/plain' }
+  );
+
+  const link = document.createElement('a');
+
+  link.href = URL.createObjectURL(blob);
+
+  link.download = `Receipt_${txnId}.txt`;
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(link.href);
+}
